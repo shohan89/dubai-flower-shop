@@ -6,16 +6,16 @@ import type { Database } from "@/types/database.types";
 
 /**
  * Request-scoped Supabase client for Server Components, Server Actions,
- * and Route Handlers. Uses the anon key and the caller's session cookies —
- * all access is subject to RLS. Create a fresh instance per request; do
- * not cache or share across requests.
+ * and Route Handlers. Uses the publishable key and the caller's session
+ * cookies — all access is subject to RLS. Create a fresh instance per
+ * request; do not cache or share across requests.
  */
 export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
-    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       cookies: {
         getAll() {
@@ -28,8 +28,8 @@ export async function createClient() {
             );
           } catch {
             // Called from a Server Component with no response to write to.
-            // Safe to ignore because `src/proxy.ts` refreshes the session
-            // on every request.
+            // Safe to ignore because `src/middleware.ts` refreshes the
+            // session on every request.
           }
         },
       },

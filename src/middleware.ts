@@ -4,15 +4,19 @@ import { publicEnv } from "@/lib/env/public";
 
 /**
  * Refreshes the Supabase auth session cookie on every request.
- * This is Next.js 16's `proxy.ts` (the replacement for `middleware.ts`);
- * it runs on the Node.js runtime.
+ *
+ * Deliberately using the legacy `middleware.ts` convention (Edge runtime)
+ * instead of Next 16's `proxy.ts`: `proxy.ts` runs on the Node.js runtime
+ * only, and @opennextjs/cloudflare (our deployment target) rejects
+ * Node-runtime middleware at build time. Revisit once the adapter
+ * supports it.
  */
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
-    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       cookies: {
         getAll() {

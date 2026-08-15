@@ -14,3 +14,8 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// Enables `next dev` to read Cloudflare bindings (env vars, R2, etc.)
+// declared in wrangler.jsonc. No-op in production builds.
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+initOpenNextCloudflareForDev();

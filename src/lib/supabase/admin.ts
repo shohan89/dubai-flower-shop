@@ -7,7 +7,7 @@ import type { Database } from "@/types/database.types";
 /**
  * Service-role Supabase client. Bypasses Row Level Security entirely.
  *
- * Only import this inside `src/server/services/*` modules that perform
+ * Only import this inside `src/services/*` modules that perform
  * their own explicit authorization checks before using it — never from
  * components, Server Actions, or Route Handlers directly, and never for
  * a request path that just needs the caller's own RLS-scoped access.

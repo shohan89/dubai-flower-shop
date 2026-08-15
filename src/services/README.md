@@ -3,9 +3,9 @@
 Business logic lives here, one module per domain (e.g.
 `product.service.ts`, `order.service.ts`, `pricing.service.ts`). Rules:
 
-- Services are the only callers of `src/data-access` repositories.
-- Validate all external input with Zod schemas (from `src/lib/validation`
-  or colocated) before it reaches a repository call.
+- Services are the only callers of `src/repositories`.
+- Validate all external input with Zod schemas from `src/validations`
+  before it reaches a repository call.
 - Enforce authorization here: check the caller's role/session before
   performing privileged operations, even if the route/action above
   already gated on role — services must be safe to call from anywhere.

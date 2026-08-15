@@ -9,8 +9,8 @@ Repositories in this directory own all direct Supabase queries. Rules:
   client from `src/lib/supabase/admin.ts`) — never construct a client
   inside a repository function.
 - No business logic, no authorization decisions, no Zod validation here —
-  those belong in `src/server/services`. Repositories only translate
-  between typed function calls and Postgres queries.
+  those belong in `src/services`. Repositories only translate between
+  typed function calls and Postgres queries.
 - Return typed rows (or thin mapped DTOs), not raw `PostgrestResponse`
   objects — unwrap `{ data, error }` and throw on error so callers don't
   each re-implement error handling.
