@@ -87,13 +87,37 @@ The app is adapted for Cloudflare Workers via `@opennextjs/cloudflare`
 (`open-next.config.ts`, `wrangler.jsonc`). See `docs/DEPLOYMENT.md` for
 the build/preview/deploy workflow and required Cloudflare resources.
 
-## Route groups (established as the app grows)
+## Route groups
 
-- `(storefront)` — public customer-facing pages
-- `(admin)` — dashboard, gated by role in `src/proxy.ts` / layout-level
-  authorization checks
+- `(auth)` — public auth pages (login, signup, forgot/reset password),
+  shared centered-card layout
+- `account/` — customer account pages, gated by `requireCustomerAccess()`
+  in its layout
+- `admin/login` — public admin login (outside the protected group)
+- `admin/(dashboard)` — everything else under `/admin`, gated by
+  `requireAdminAccess()` in its layout
 - `api/*` — Route Handlers for webhooks, health checks, and
-  non-Server-Action integrations
+  non-Server-Action integrations (e.g. `auth/confirm` for email links)
+
+Storefront pages (shop, product detail, cart, …) don't have a route
+group yet — they'll get one as that phase lands.
+
+## Database
+
+Schema, RLS policy philosophy, and migration workflow are documented in
+`docs/DATABASE.md` — not duplicated here.
+
+## Authentication & authorization
+
+Role model, permission matrix, the `requireAuth`/`requireRole`/
+`requirePermission` helpers, and route protection strategy are documented
+in `docs/AUTHENTICATION.md`.
+
+## Admin dashboard
+
+The reusable admin component library (`DataTable`, `Modal`/`Drawer`,
+`ImageUploader`, etc.), order status transition rules, and per-domain
+notes are documented in `docs/ADMIN.md`.
 
 ## Design tokens
 

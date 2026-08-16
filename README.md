@@ -19,9 +19,9 @@ Open [http://localhost:3000](http://localhost:3000). Health check at
 - [Architecture](docs/ARCHITECTURE.md)
 - [Development](docs/DEVELOPMENT.md)
 - [Deployment](docs/DEPLOYMENT.md)
-
-Database schema and admin role docs are added as those phases land — see
-`docs/`.
+- [Database](docs/DATABASE.md)
+- [Authentication & Authorization](docs/AUTHENTICATION.md)
+- [Admin dashboard](docs/ADMIN.md)
 
 ## Scripts
 
@@ -29,4 +29,5 @@ Database schema and admin role docs are added as those phases land — see
 - `npm run build` — production build
 - `npm run lint` — ESLint
 - `npm run typecheck` — TypeScript check
+- `npm run test` — unit tests (Vitest)
 - `npm run cf:preview` / `npm run cf:deploy` — Cloudflare Workers preview/deploy

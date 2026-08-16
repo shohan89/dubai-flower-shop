@@ -1,4 +1,4 @@
-# Deployment (Cloudflare Workers)
+   # Deployment (Cloudflare Workers)
 
 The app deploys to Cloudflare Workers via
 [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare), which
@@ -15,7 +15,7 @@ Config files:
 
 ## One-time setup before the first real deploy
 
-1. Log in to Cloudflare:
+1. Log in to Cloudflare:`
    ```bash
    npx wrangler login
    ```

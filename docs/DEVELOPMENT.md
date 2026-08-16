@@ -26,6 +26,7 @@ at [http://localhost:3000/api/health](http://localhost:3000/api/health).
 | `npm run start` | Run the production build locally (Node server) |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | `tsc --noEmit` |
+| `npm run test` | Unit tests (Vitest) |
 | `npm run cf:build` | Build and adapt the app for Cloudflare Workers |
 | `npm run cf:preview` | Build, then run the Workers build locally via Wrangler |
 | `npm run cf:deploy` | Build, then deploy to Cloudflare Workers |
