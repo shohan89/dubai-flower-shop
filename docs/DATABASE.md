@@ -34,9 +34,18 @@ Connection string → Session pooler) — that's what `SUPABASE_DB_URL` in
 `.env.example`/`.env.local` uses.
 
 `supabase/seed.sql` is sample/demo data only (a handful of categories,
-products, delivery zones, homepage sections, and settings) — never real
-orders or customers. It's applied explicitly with `--include-seed`, never
-automatically.
+products, delivery zones, homepage sections, FAQs, and settings) — never
+real orders or customers. It's applied explicitly with `--include-seed`,
+never automatically.
+
+**`db push --include-seed` can silently no-op on an edited seed file.**
+When `seed.sql` has been applied once before, re-running `db push
+--include-seed` after editing it can report `"Updating seed hash..."` /
+success without actually re-executing the SQL (observed on CLI 2.114.0,
+reproduced twice). If row counts don't change after a seed update,
+verify directly — e.g. run the new SQL block through a one-off script
+using the `postgres` npm package against `SUPABASE_DB_URL` — rather than
+trusting the CLI's reported success.
 
 ## Schema domains
 

@@ -43,6 +43,21 @@ export async function getCategoryById(
   return data;
 }
 
+export async function getCategoryBySlug(
+  supabase: SupabaseClient<Database>,
+  slug: string,
+): Promise<CategoryRow | null> {
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("slug", slug)
+    .eq("is_active", true)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 export async function createCategory(
   supabase: SupabaseClient<Database>,
   input: CategoryInsert,

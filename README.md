@@ -22,6 +22,7 @@ Open [http://localhost:3000](http://localhost:3000). Health check at
 - [Database](docs/DATABASE.md)
 - [Authentication & Authorization](docs/AUTHENTICATION.md)
 - [Admin dashboard](docs/ADMIN.md)
+- [Storefront](docs/STOREFRONT.md)
 
 ## Scripts
 

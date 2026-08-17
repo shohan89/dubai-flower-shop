@@ -4,6 +4,7 @@ import {
   listAllCategories,
   listCategoriesPaginated,
   getCategoryById,
+  getCategoryBySlug,
   createCategory,
   updateCategory,
   softDeleteCategory,
@@ -22,6 +23,11 @@ export async function listCategoriesForAdmin(params: {
 export async function getAllCategoriesForPicker() {
   const supabase = await createClient();
   return listAllCategories(supabase);
+}
+
+export async function getCategoryForStorefront(slug: string) {
+  const supabase = await createClient();
+  return getCategoryBySlug(supabase, slug);
 }
 
 export async function getCategoryForEdit(id: string) {

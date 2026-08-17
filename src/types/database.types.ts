@@ -2098,6 +2098,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      newsletter_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          is_active: boolean;
+          subscribed_at: string;
+          unsubscribed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          is_active?: boolean;
+          subscribed_at?: string;
+          unsubscribed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          is_active?: boolean;
+          subscribed_at?: string;
+          unsubscribed_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

@@ -194,24 +194,81 @@ from (values
 join public.delivery_zones z on z.name = v.zone_name
 on conflict (delivery_zone_id, area_name) do nothing;
 
-insert into public.delivery_slots (label, start_time, end_time, is_same_day, extra_fee, display_order) values
-  ('9:00 AM - 12:00 PM', '09:00', '12:00', true, 0, 1),
-  ('12:00 PM - 3:00 PM', '12:00', '15:00', true, 0, 2),
-  ('3:00 PM - 6:00 PM', '15:00', '18:00', true, 15.00, 3),
-  ('6:00 PM - 9:00 PM', '18:00', '21:00', false, 15.00, 4);
+insert into public.delivery_slots (label, start_time, end_time, is_same_day, extra_fee, display_order)
+select v.label, v.start_time::time, v.end_time::time, v.is_same_day, v.extra_fee, v.display_order
+from (values
+  ('9:00 AM - 12:00 PM', '09:00', '12:00', true, 0::numeric, 1),
+  ('12:00 PM - 3:00 PM', '12:00', '15:00', true, 0::numeric, 2),
+  ('3:00 PM - 6:00 PM', '15:00', '18:00', true, 15.00::numeric, 3),
+  ('6:00 PM - 9:00 PM', '18:00', '21:00', false, 15.00::numeric, 4)
+) as v(label, start_time, end_time, is_same_day, extra_fee, display_order)
+where not exists (select 1 from public.delivery_slots where label = v.label);
 
 -- Homepage sections -----------------------------------------------------------
+-- Guarded per-row by heading (homepage_sections has no natural unique key
+-- otherwise) so re-running this file against an already-seeded database
+-- adds newly-introduced section types without duplicating earlier ones —
+-- e.g. the four original rows from Phase 2, still guarded here.
 insert into public.homepage_sections (
   section_type, heading, subheading, cta_text, cta_url, layout, content, display_order, is_enabled
-) values
+)
+select v.section_type, v.heading, v.subheading, v.cta_text, v.cta_url, v.layout, v.content::jsonb, v.display_order, true
+from (values
   ('hero', 'Flowers & Plants, Delivered Fresh Across Dubai', 'Same-day delivery available',
-   'Shop Now', '/shop', 'full-bleed', '{}', 1, true),
+   'Shop Now', '/shop', 'full-bleed', '{}', 1),
   ('collection_showcase', 'Best Sellers', 'Loved by our customers',
-   'View Collection', '/collections/best-sellers', 'carousel', '{"collection_slug":"best-sellers"}', 2, true),
+   'View Collection', '/collections/best-sellers', 'carousel', '{"collection_slug":"best-sellers"}', 2),
   ('category_grid', 'Shop by Category', null, null, null,
-   'grid-3', '{"category_slugs":["flowers","plants","gifts"]}', 3, true),
+   'grid-3', '{"category_slugs":["flowers","plants","gifts"]}', 3),
   ('collection_showcase', 'New Arrivals', 'Fresh in this week',
-   'View Collection', '/collections/new-arrivals', 'carousel', '{"collection_slug":"new-arrivals"}', 4, true);
+   'View Collection', '/collections/new-arrivals', 'carousel', '{"collection_slug":"new-arrivals"}', 4),
+  ('featured_products', 'Editor''s Picks', 'Handpicked for you',
+   null, null, 'carousel', '{"limit":8}', 5),
+  ('occasion', 'Shop by Occasion', 'Flowers and gifts for every moment',
+   null, null, null, '{}', 6),
+  ('bestsellers', 'Customer Favorites', 'Our most-loved arrangements',
+   'Shop Best Sellers', '/shop?sort=bestselling', 'carousel', '{"limit":8}', 7),
+  ('promo_banner', 'Free delivery on orders over AED 300', 'Same-day delivery available across Dubai',
+   'Shop Now', '/shop', null, '{}', 8),
+  ('plant_section', 'Plants for Every Space', 'Low-maintenance greenery, delivered potted and ready',
+   'Shop Plants', '/plants', 'carousel', '{"limit":8}', 9),
+  ('trending_products', 'Trending Now', 'What Dubai is sending this week',
+   null, null, 'carousel', '{"limit":8}', 10),
+  ('gift_addons', 'Perfect Add-ons', 'Chocolates, vases, and cards to complete the gift',
+   null, null, null, '{}', 11),
+  ('testimonials', 'Loved by Dubai', 'What our customers are saying',
+   null, null, null,
+   '{"testimonials":[' ||
+   '{"author":"Amina R.","body":"The roses arrived fresh and beautifully wrapped — exactly on time for the anniversary.","rating":5},' ||
+   '{"author":"James T.","body":"Ordered a plant for my new office and it arrived in perfect condition. Will order again.","rating":5},' ||
+   '{"author":"Fatima A.","body":"Same-day delivery saved my day. Gorgeous arrangement, great communication throughout.","rating":4}' ||
+   ']}', 12),
+  ('faq', 'Frequently Asked Questions', 'Everything you need to know about ordering and delivery',
+   null, null, null, '{}', 13),
+  ('newsletter', 'Stay in Bloom', 'Get seasonal arrangements and offers in your inbox',
+   null, null, null, '{}', 14)
+) as v(section_type, heading, subheading, cta_text, cta_url, layout, content, display_order)
+where not exists (select 1 from public.homepage_sections where heading = v.heading);
+
+-- FAQs (feed the homepage FAQ section and a future /faq page) ----------------
+insert into public.faq_categories (name, slug, display_order)
+values ('Ordering & Delivery', 'ordering-delivery', 1)
+on conflict (slug) do nothing;
+
+insert into public.faqs (faq_category_id, question, answer, display_order)
+select c.id, v.question, v.answer, v.display_order
+from (values
+  ('Do you offer same-day delivery in Dubai?',
+   'Yes — order before the daily cutoff time shown at checkout and we''ll deliver the same day across most of Dubai.', 1),
+  ('How do I know my flowers will stay fresh?',
+   'Every bouquet is cut and arranged the same day it ships, and each listing includes care instructions to help it last.', 2),
+  ('Can I include a gift message?',
+   'Yes — every order has an optional gift message field at checkout, delivered with the arrangement.', 3),
+  ('What if I need to change my delivery address?',
+   'Contact our support team as soon as possible with your order number and we''ll update it before dispatch where we can.', 4)
+) as v(question, answer, display_order)
+join public.faq_categories c on c.slug = 'ordering-delivery'
+where not exists (select 1 from public.faqs where question = v.question);
 
 -- Settings singletons -----------------------------------------------------------
 insert into public.site_settings (site_name, site_description, contact_email, contact_phone)
